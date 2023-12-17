@@ -1,0 +1,19 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/expensesListFragment">
+
+    <fragment
+        android:id="@+id/expensesListFragment"
+        android:name="com.example.pract1_v1.ExpensesListFragment"
+        android:label="Список расходов">
+        <action
+            android:id="@+id/action_expensesListFragment_to_addExpenseFragment"
+            app:destination="@id/addExpenseFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/addExpenseFragment"
+        android:name="com.example.pract1_v1.AddExpenseFragment"
+        android:label="Добавление расходов" />
+</navigation>
