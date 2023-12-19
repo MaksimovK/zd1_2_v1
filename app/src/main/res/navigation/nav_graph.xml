@@ -10,10 +10,18 @@
         <action
             android:id="@+id/action_expensesListFragment_to_addExpenseFragment"
             app:destination="@id/addExpenseFragment"/>
+        <action
+            android:id="@+id/action_expensesListFragment_to_editExpenseFragment"
+            app:destination="@id/editExpenseFragment"/>
     </fragment>
 
     <fragment
         android:id="@+id/addExpenseFragment"
         android:name="com.example.pract1_v1.AddExpenseFragment"
         android:label="Добавление расходов" />
+
+    <fragment
+        android:id="@+id/editExpenseFragment"
+        android:name="com.example.pract1_v1.EditExpenseFragment"
+        android:label="Редактирование расходов" />
 </navigation>

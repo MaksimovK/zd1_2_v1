@@ -6,4 +6,8 @@
     <string name="description">Описание</string>
     <string name="cost">Сумма</string>
     <string name="save">Сохранить</string>
+    <string name="remove">Remove</string>
+    <string name="edit">Edit</string>
+    <string name="Amount">Сумма</string>
+    <string name="add_expenditure">Добавить расход</string>
 </resources>

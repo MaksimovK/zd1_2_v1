@@ -6,21 +6,42 @@
 
     <TextView
         android:id="@+id/dateTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:text="Date" />
+        android:text="@string/date" />
 
     <TextView
         android:id="@+id/descriptionTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:text="Description"
+        android:text="@string/description"
         android:layout_marginStart="16dp"/>
 
     <TextView
         android:id="@+id/amountTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:text="Amount"
+        android:text="@string/Amount"
+        android:layout_marginStart="16dp"/>
+
+    <ImageButton
+        android:id="@+id/editButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:background="?android:selectableItemBackground"
+        android:contentDescription="@string/edit"
+        android:src="@drawable/edit" />
+
+    <ImageButton
+        android:id="@+id/deleteButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/delete"
+        android:contentDescription="@string/remove"
+        android:background="?android:selectableItemBackground"
         android:layout_marginStart="16dp"/>
 </LinearLayout>

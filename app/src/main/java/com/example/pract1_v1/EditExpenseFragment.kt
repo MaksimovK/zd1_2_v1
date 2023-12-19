@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
@@ -16,47 +15,55 @@ import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AddExpenseFragment : Fragment() {
+class EditExpenseFragment : Fragment() {
     private lateinit var editTextDate: EditText
     private lateinit var editTextDescription: EditText
     private lateinit var editTextAmount: EditText
     private lateinit var buttonSave: Button
+    private var expenseId: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_add_expense, container, false)
+        val view = inflater.inflate(R.layout.fragment_edit_expense, container, false)
 
         editTextDate = view.findViewById(R.id.editTextDate)
         editTextDescription = view.findViewById(R.id.editTextDescription)
         editTextAmount = view.findViewById(R.id.editTextAmount)
         buttonSave = view.findViewById(R.id.buttonSave)
 
+        expenseId = arguments?.getString("expenseId")
+        loadExpenseData(expenseId)
+
         buttonSave.setOnClickListener {
-            saveExpense()
+            updateExpense()
         }
 
         return view
     }
 
-    private fun saveExpenseInSharedPreferences(expense: Expense) {
+    private fun loadExpenseData(expenseId: String?) {
         val sharedPreferences = requireActivity().getSharedPreferences("ExpensesPref", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-
-        // Преобразуем список расходов в JSON
         val expensesJson = sharedPreferences.getString("expenses", "[]")
         val expensesType = object : TypeToken<MutableList<Expense>>() {}.type
         val expenses = Gson().fromJson<MutableList<Expense>>(expensesJson, expensesType)
-        expenses.add(expense)
 
-        // Сохраняем обновленный список обратно в SharedPreferences
-        val newExpensesJson = Gson().toJson(expenses)
-        editor.putString("expenses", newExpensesJson)
-        editor.apply()
+        val expense = expenses.find { it.id == expenseId }
+        expense?.let {
+            editTextDate.setText(it.date)
+            editTextDescription.setText(it.description)
+            editTextAmount.setText(it.amount.toString())
+        }
     }
 
-    private fun saveExpense() {
+    private fun updateExpense() {
+        val sharedPreferences = requireActivity().getSharedPreferences("ExpensesPref", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        val expensesJson = sharedPreferences.getString("expenses", "[]")
+        val expensesType = object : TypeToken<MutableList<Expense>>() {}.type
+        val expenses = Gson().fromJson<MutableList<Expense>>(expensesJson, expensesType)
+
         val date = editTextDate.text.toString()
         val description = editTextDescription.text.toString()
         val amountString = editTextAmount.text.toString()
@@ -65,18 +72,18 @@ class AddExpenseFragment : Fragment() {
             return
         }
 
-        val amount = amountString.toDouble()
-        val id = UUID.randomUUID().toString() // Генерация уникального ID
-        val expense = Expense(id, date, description, amount)
-        saveExpenseInSharedPreferences(expense)
+        val amount = amountString.toDoubleOrNull() ?: 0.0
+        val updatedExpense = Expense(expenseId!!, date, description, amount)
+        val updatedExpenses = expenses.map { if (it.id == expenseId) updatedExpense else it }.toMutableList()
+
+        editor.putString("expenses", Gson().toJson(updatedExpenses))
+        editor.apply()
 
         findNavController().navigateUp()
     }
 
-
-
-    private fun validateInputs(date: String, description: String, amount: String): Boolean {
-        if (date.isBlank() || description.isBlank() || amount.isBlank()) {
+    private fun validateInputs(date: String, description: String, amountString: String): Boolean {
+        if (date.isBlank() || description.isBlank() || amountString.isBlank()) {
             showToast("Пожалуйста, заполните все поля")
             return false
         }
@@ -86,7 +93,7 @@ class AddExpenseFragment : Fragment() {
             return false
         }
 
-        if (amount.toDoubleOrNull() == null) {
+        if (amountString.toDoubleOrNull() == null) {
             showToast("Введите корректную сумму")
             return false
         }
